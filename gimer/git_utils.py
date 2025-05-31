@@ -1,6 +1,7 @@
-from typing import List
+
 import git
-from git import Repo, GitCommandError
+from git import GitCommandError, Repo
+
 
 class GitError(Exception):
     pass
@@ -14,13 +15,13 @@ class MergeError(GitError):
 def get_repository() -> Repo:
     try:
         return git.Repo('.')
-    except git.InvalidGitRepositoryError:
-        raise NotGitRepositoryError("This directory is not a Git repository.")
+    except git.InvalidGitRepositoryError as e:
+        raise NotGitRepositoryError("This directory is not a Git repository.") from e
 
 def get_current_branch(repo: Repo) -> str:
     return repo.active_branch.name
 
-def get_all_branches(repo: Repo) -> List[str]:
+def get_all_branches(repo: Repo) -> list[str]:
     return [branch.name for branch in repo.branches]
 
 def check_working_directory_clean(repo: Repo) -> bool:
@@ -30,4 +31,4 @@ def merge_branch(repo: Repo, target_branch: str) -> None:
     try:
         repo.git.merge(target_branch)
     except GitCommandError as e:
-        raise MergeError(str(e))
+        raise MergeError(str(e)) from e

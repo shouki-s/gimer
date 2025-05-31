@@ -1,38 +1,37 @@
 #!/usr/bin/env python3
 import sys
-from typing import List
 
 import click
 from rich.console import Console
+from rich.prompt import Confirm, Prompt
 from rich.table import Table
-from rich.prompt import Prompt, Confirm
 
-from .git_utils import (
-    get_repository,
-    get_current_branch,
-    get_all_branches,
-    check_working_directory_clean,
-    merge_branch,
-    NotGitRepositoryError,
-    MergeError,
-)
 from .constants import (
-    TABLE_TITLE,
-    COLUMN_NUMBER,
     COLUMN_BRANCH,
-    MSG_CURRENT_BRANCH,
-    MSG_WARNING_UNCOMMITTED,
+    COLUMN_NUMBER,
     MSG_CONTINUE,
+    MSG_CURRENT_BRANCH,
+    MSG_MERGE_CONFLICT,
+    MSG_MERGE_ERROR,
+    MSG_MERGE_SUCCESS,
     MSG_SELECT_BRANCH,
     MSG_STARTING_MERGE,
-    MSG_MERGE_SUCCESS,
-    MSG_MERGE_ERROR,
-    MSG_MERGE_CONFLICT,
+    MSG_WARNING_UNCOMMITTED,
+    TABLE_TITLE,
+)
+from .git_utils import (
+    MergeError,
+    NotGitRepositoryError,
+    check_working_directory_clean,
+    get_all_branches,
+    get_current_branch,
+    get_repository,
+    merge_branch,
 )
 
 console = Console()
 
-def display_branches(branches: List[str]) -> None:
+def display_branches(branches: list[str]) -> None:
     table = Table(title=TABLE_TITLE)
     table.add_column(COLUMN_NUMBER, style="cyan")
     table.add_column(COLUMN_BRANCH, style="green")
@@ -47,7 +46,7 @@ def main() -> None:
     try:
         repo = get_repository()
     except NotGitRepositoryError as e:
-        console.print(f"[red]Error: {str(e)}[/red]")
+        console.print(f"[red]Error: {e!s}[/red]")
         sys.exit(1)
 
     current_branch = get_current_branch(repo)
