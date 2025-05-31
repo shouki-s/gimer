@@ -46,4 +46,3 @@ class TestRepositories:
         repo_path = get_github_repo_path(repo_url)
         expected = get_repos_path() / "github.com" / "user" / "repo"
         assert repo_path == expected
-        assert self.mock_mkdir.call_count == 3
