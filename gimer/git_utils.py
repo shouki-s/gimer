@@ -12,10 +12,7 @@ class MergeError(GitError):
     pass
 
 def clone_repository_from_github(repo_url: str, target_dir: str) -> Repo:
-    try:
-        return git.Repo.clone_from(repo_url, target_dir)
-    except git.GitCommandError as e:
-        raise GitError(str(e)) from e
+    return git.Repo.clone_from(repo_url, target_dir)
 
 def get_repository() -> Repo:
     try:
