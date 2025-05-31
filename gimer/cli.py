@@ -1,71 +1,82 @@
 #!/usr/bin/env python3
+import sys
+from typing import List
+
 import click
-import git
 from rich.console import Console
 from rich.table import Table
 from rich.prompt import Prompt, Confirm
-import sys
+
+from .git_utils import (
+    get_repository,
+    get_current_branch,
+    get_all_branches,
+    check_working_directory_clean,
+    merge_branch,
+    NotGitRepositoryError,
+    MergeError,
+)
+from .constants import (
+    TABLE_TITLE,
+    COLUMN_NUMBER,
+    COLUMN_BRANCH,
+    MSG_CURRENT_BRANCH,
+    MSG_WARNING_UNCOMMITTED,
+    MSG_CONTINUE,
+    MSG_SELECT_BRANCH,
+    MSG_STARTING_MERGE,
+    MSG_MERGE_SUCCESS,
+    MSG_MERGE_ERROR,
+    MSG_MERGE_CONFLICT,
+)
 
 console = Console()
 
-def get_current_branch(repo):
-    return repo.active_branch.name
-
-def get_all_branches(repo):
-    return [branch.name for branch in repo.branches]
-
-def check_working_directory_clean(repo):
-    return not repo.is_dirty()
-
-@click.command()
-def main():
-    """CLI tool to make Git merge operations easier"""
-    try:
-        repo = git.Repo('.')
-    except git.InvalidGitRepositoryError:
-        console.print("[red]Error: This directory is not a Git repository.[/red]")
-        sys.exit(1)
-
-    # Show current branch
-    current_branch = get_current_branch(repo)
-    console.print(f"\n[bold]Current branch:[/bold] [green]{current_branch}[/green]")
-
-    # Check if working directory is clean
-    if not check_working_directory_clean(repo):
-        console.print("[yellow]Warning: You have uncommitted changes in your working directory.[/yellow]")
-        if not Confirm.ask("Do you want to continue?"):
-            sys.exit(0)
-
-    # Show mergeable branches
-    branches = get_all_branches(repo)
-    branches.remove(current_branch)
-
-    table = Table(title="Mergeable Branches")
-    table.add_column("No.", style="cyan")
-    table.add_column("Branch Name", style="green")
+def display_branches(branches: List[str]) -> None:
+    table = Table(title=TABLE_TITLE)
+    table.add_column(COLUMN_NUMBER, style="cyan")
+    table.add_column(COLUMN_BRANCH, style="green")
 
     for i, branch in enumerate(branches, 1):
         table.add_row(str(i), branch)
 
     console.print(table)
 
-    # Select branch to merge
+@click.command()
+def main() -> None:
+    try:
+        repo = get_repository()
+    except NotGitRepositoryError as e:
+        console.print(f"[red]Error: {str(e)}[/red]")
+        sys.exit(1)
+
+    current_branch = get_current_branch(repo)
+    console.print(f"\n[bold]{MSG_CURRENT_BRANCH}[/bold] [green]{current_branch}[/green]")
+
+    if not check_working_directory_clean(repo):
+        console.print(f"[yellow]{MSG_WARNING_UNCOMMITTED}[/yellow]")
+        if not Confirm.ask(MSG_CONTINUE):
+            sys.exit(0)
+
+    branches = get_all_branches(repo)
+    branches.remove(current_branch)
+    display_branches(branches)
+
     branch_num = Prompt.ask(
-        "Select a branch number to merge",
+        MSG_SELECT_BRANCH,
         choices=[str(i) for i in range(1, len(branches) + 1)]
     )
     target_branch = branches[int(branch_num) - 1]
 
-    # Execute merge
     try:
-        console.print(f"\n[bold]Starting merge:[/bold] {current_branch} ← {target_branch}")
-        repo.git.merge(target_branch)
-        console.print("[green]Merge completed successfully![/green]")
-    except git.GitCommandError as e:
-        console.print("[red]An error occurred during merge:[/red]")
+        console.print(f"\n[bold]{MSG_STARTING_MERGE}[/bold] {current_branch} ← {target_branch}")
+        merge_branch(repo, target_branch)
+        console.print(f"[green]{MSG_MERGE_SUCCESS}[/green]")
+    except MergeError as e:
+        console.print(f"[red]{MSG_MERGE_ERROR}[/red]")
         console.print(str(e))
         if "CONFLICT" in str(e):
-            console.print("\n[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]")
+            console.print(f"\n[yellow]{MSG_MERGE_CONFLICT}[/yellow]")
         sys.exit(1)
 
 if __name__ == '__main__':
