@@ -12,9 +12,50 @@ click = "^8.2.1"
 gitpython = "^3.1.44"
 rich = "^14.0.0"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.3.0"
+mypy = "^1.8.0"
+
 [tool.poetry.scripts]
 gimer = "gimer.cli:main"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "W",   # pycodestyle warnings
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "PL",  # pylint
+    "RUF", # ruff-specific rules
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "PLR0913",  # too many arguments
+]
+
+[tool.ruff.isort]
+known-first-party = ["gimer"]
+line-length = 88
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
