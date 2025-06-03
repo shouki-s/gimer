@@ -14,8 +14,9 @@ console = Console()
 @click.argument('repo_url')
 @click.argument('source_branch')
 @click.argument('target_branch')
-def main(repo_url: str, source_branch: str, target_branch: str) -> None:
-    git = Git()
+@click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
+def main(repo_url: str, source_branch: str, target_branch: str, dry_run: bool) -> None:
+    git = Git(dry_run=dry_run)
     repo_path = get_github_repo_path(repo_url)
     os.chdir(repo_path)
     if not (repo_path / '.git').exists():

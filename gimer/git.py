@@ -6,10 +6,14 @@ class GitError(Exception):
 
 
 class Git:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, dry_run: bool = False) -> None:
+        self.dry_run = dry_run
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
+        if self.dry_run:
+            print(f"git {' '.join(args)}")
+            return None
+
         try:
             result = subprocess.run(
                 ["git", *args],
