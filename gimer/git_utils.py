@@ -1,46 +1,47 @@
-import git
-from git import GitCommandError, Repo
+import subprocess
 
 
 class GitError(Exception):
     pass
 
-class NotGitRepositoryError(GitError):
-    pass
-
-class MergeError(GitError):
-    pass
-
-def clone_repository_from_github(repo_url: str, target_dir: str) -> Repo:
-    return git.Repo.clone_from(repo_url, target_dir)
-
-def get_repository() -> Repo:
+def run_git_command(*args: str, capture_output: bool = False) -> str | None:
     try:
-        return git.Repo('.')
-    except git.InvalidGitRepositoryError as e:
-        raise NotGitRepositoryError("This directory is not a Git repository.") from e
+        result = subprocess.run(
+            ["git", *args],
+            check=True,
+            capture_output=capture_output,
+            text=True
+        )
+        return result.stdout if capture_output else None
+    except subprocess.CalledProcessError as e:
+        raise GitError(f"git {' '.join(args)} failed: {e.stderr}") from e
 
-def get_current_branch(repo: Repo) -> str:
-    return repo.active_branch.name
+def clone_repository_from_github(repo_url: str, target_dir: str) -> None:
+    run_git_command("clone", repo_url, target_dir)
 
-def get_all_branches(repo: Repo) -> list[str]:
-    return [branch.name for branch in repo.branches]
+def get_repository() -> None:
+    run_git_command("rev-parse", "--git-dir")
 
-def check_working_directory_clean(repo: Repo) -> bool:
-    return not repo.is_dirty()
+def get_current_branch() -> str:
+    return run_git_command("rev-parse", "--abbrev-ref", "HEAD", capture_output=True).strip()
 
-def clean_working_directory(repo: Repo) -> None:
-    repo.git.clean("-fdx")
-    repo.git.reset("--hard")
+def get_all_branches() -> list[str]:
+    branches = run_git_command("branch", "--format=%(refname:short)", capture_output=True)
+    return [b for b in branches.splitlines() if b]
 
-def checkout_branch(repo: Repo, branch: str) -> None:
-    repo.git.checkout(branch)
+def check_working_directory_clean() -> bool:
+    status = run_git_command("status", "--porcelain", capture_output=True)
+    return not status
 
-def push_branch(repo: Repo, branch: str) -> None:
-    repo.git.push("origin", branch)
+def clean_working_directory() -> None:
+    run_git_command("clean", "-fdx")
+    run_git_command("reset", "--hard")
 
-def merge_branch(repo: Repo, target_branch: str) -> None:
-    try:
-        repo.git.merge(target_branch)
-    except GitCommandError as e:
-        raise MergeError(str(e)) from e
+def checkout_branch(branch: str) -> None:
+    run_git_command("checkout", branch)
+
+def push_branch(branch: str) -> None:
+    run_git_command("push", "origin", branch)
+
+def merge_branch(target_branch: str) -> None:
+    run_git_command("merge", target_branch)
