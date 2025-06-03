@@ -40,6 +40,9 @@ def clean_working_directory() -> None:
 def checkout_branch(branch: str) -> None:
     run_git_command("checkout", branch)
 
+def pull_branch(branch: str) -> None:
+    run_git_command("pull", "origin", branch)
+
 def push_branch(branch: str) -> None:
     run_git_command("push", "origin", branch)
 

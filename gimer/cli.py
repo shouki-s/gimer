@@ -13,6 +13,7 @@ from .git_utils import (
     clone_repository_from_github,
     get_repository,
     merge_branch,
+    pull_branch,
     push_branch,
 )
 from .repositories import get_github_repo_path
@@ -42,6 +43,8 @@ def main(repo_url: str, source_branch: str, target_branch: str) -> None:
             return
 
     console.print(f"\n[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
+    pull_branch(source_branch)
+    pull_branch(target_branch)
     checkout_branch(target_branch)
     try:
         merge_branch(source_branch)
