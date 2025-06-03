@@ -23,7 +23,6 @@ def main(repo_url: str, source_branch: str, target_branch: str) -> None:
         git.clone_repository_from_github(repo_url, str(repo_path))
 
     os.chdir(repo_path)
-    git = Git()
 
     if not git.check_working_directory_clean():
         console.print("[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")

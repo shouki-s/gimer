@@ -7,7 +7,7 @@ class GitError(Exception):
 
 class Git:
     def __init__(self) -> None:
-        self._run_git_command("rev-parse", "--git-dir")
+        pass
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
         try:
@@ -21,14 +21,8 @@ class Git:
         except subprocess.CalledProcessError as e:
             raise GitError(f"git {' '.join(args)} failed: {e.stderr}") from e
 
-    @classmethod
-    def clone_repository_from_github(cls, repo_url: str, target_dir: str) -> None:
-        subprocess.run(
-            ["git", "clone", repo_url, target_dir],
-            check=True,
-            capture_output=True,
-            text=True
-        )
+    def clone_repository_from_github(self, repo_url: str, target_dir: str) -> None:
+        self._run_git_command("git", "clone", repo_url, target_dir)
 
     def get_current_branch(self) -> str:
         return self._run_git_command("rev-parse", "--abbrev-ref", "HEAD", capture_output=True).strip()
