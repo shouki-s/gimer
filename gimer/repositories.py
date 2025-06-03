@@ -2,7 +2,7 @@ import os
 import platform
 from pathlib import Path
 
-from gimer.constants import System
+from gimer.system import System
 
 
 def get_repos_path() -> Path:
