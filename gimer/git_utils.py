@@ -36,6 +36,9 @@ def clean_working_directory(repo: Repo) -> None:
 def checkout_branch(repo: Repo, branch: str) -> None:
     repo.git.checkout(branch)
 
+def push_branch(repo: Repo, branch: str) -> None:
+    repo.git.push("origin", branch)
+
 def merge_branch(repo: Repo, target_branch: str) -> None:
     try:
         repo.git.merge(target_branch)

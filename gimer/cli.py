@@ -13,6 +13,7 @@ from .git_utils import (
     clone_repository_from_github,
     get_repository,
     merge_branch,
+    push_branch,
 )
 from .repositories import get_github_repo_path
 
@@ -51,7 +52,12 @@ def main(repo_url: str, source_branch: str, target_branch: str) -> None:
             console.print(
                 "\n[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]"
             )
+        return
+
     console.print("[green]Merge completed successfully![/green]")
+    console.print(f"Pushing {target_branch} to origin...")
+    push_branch(repo, target_branch)
+    console.print("[green]Push completed successfully![/green]")
 
 
 if __name__ == '__main__':
