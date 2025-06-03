@@ -5,7 +5,7 @@ import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from .git_utils import Git
+from .git import Git
 from .repositories import get_github_repo_path
 
 console = Console()
@@ -50,7 +50,6 @@ def main(repo_url: str, source_branch: str, target_branch: str) -> None:
     console.print(f"Pushing {target_branch} to origin...")
     git.push_branch(target_branch)
     console.print("[green]Push completed successfully![/green]")
-
 
 if __name__ == '__main__':
     main()
