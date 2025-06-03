@@ -1,15 +1,10 @@
-import pytest
 from git import Repo
+
 from gimer.git_utils import (
-    GitError,
-    NotGitRepositoryError,
-    MergeError,
-    get_repository,
-    get_current_branch,
-    get_all_branches,
     check_working_directory_clean,
     merge_branch,
 )
+
 
 def test_check_working_directory_clean(mocker):
     mock_repo = mocker.Mock(spec=Repo)
