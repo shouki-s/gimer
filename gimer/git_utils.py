@@ -29,6 +29,13 @@ def get_all_branches(repo: Repo) -> list[str]:
 def check_working_directory_clean(repo: Repo) -> bool:
     return not repo.is_dirty()
 
+def clean_working_directory(repo: Repo) -> None:
+    repo.git.clean("-fdx")
+    repo.git.reset("--hard")
+
+def checkout_branch(repo: Repo, branch: str) -> None:
+    repo.git.checkout(branch)
+
 def merge_branch(repo: Repo, target_branch: str) -> None:
     try:
         repo.git.merge(target_branch)

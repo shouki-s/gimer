@@ -8,6 +8,8 @@ from rich.prompt import Confirm
 
 from .git_utils import (
     check_working_directory_clean,
+    checkout_branch,
+    clean_working_directory,
     clone_repository_from_github,
     get_repository,
     merge_branch,
@@ -30,21 +32,27 @@ def main(repo_url: str, source_branch: str, target_branch: str) -> None:
     repo = get_repository()
 
     if not check_working_directory_clean(repo):
-        console.print("[yellow]Warning: You have uncommitted changes in your working directory.[/yellow]")
-        if not Confirm.ask("Do you want to continue?"):
-            sys.exit(0)
+        console.print("[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")
+        if Confirm.ask("Do you want to continue? It will clean dirty files and reset the repository."):
+            console.print("Cleaning working directory...")
+            clean_working_directory(repo)
+            console.print("[green]Working directory cleaned.[/green]")
+        else:
+            return
 
+    console.print(f"\n[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
+    checkout_branch(repo, target_branch)
     try:
-        console.print(f"\n[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
-        repo.git.checkout(target_branch)
         merge_branch(repo, source_branch)
-        console.print("[green]Merge completed successfully![/green]")
     except Exception as e:
         console.print("[red]An error occurred during merge:[/red]")
         console.print(str(e))
         if "CONFLICT" in str(e):
-            console.print("\n[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]")
-        sys.exit(1)
+            console.print(
+                "\n[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]"
+            )
+    console.print("[green]Merge completed successfully![/green]")
+
 
 if __name__ == '__main__':
     main()
