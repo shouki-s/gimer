@@ -17,11 +17,10 @@ console = Console()
 def main(repo_url: str, source_branch: str, target_branch: str) -> None:
     git = Git()
     repo_path = get_github_repo_path(repo_url)
+    os.chdir(repo_path)
     if not (repo_path / '.git').exists():
         console.print(f"Cloning repository to {repo_path}")
-        git.clone_repository_from_github(repo_url, str(repo_path))
-
-    os.chdir(repo_path)
+        git.clone_repository_from_github(repo_url)
 
     if not git.check_working_directory_clean():
         console.print("[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")
