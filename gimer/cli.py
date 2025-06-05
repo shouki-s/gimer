@@ -52,7 +52,7 @@ def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) 
         git.merge_branch(source_branch)
     except Exception as e:
         console.print("⚡[red]An error occurred during merge:[/red]")
-        console.print(f"⚡{str(e)}")
+        console.print(f"⚡{e!s}")
         if "CONFLICT" in str(e):
             console.print(
                 "\n⚡[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]"
