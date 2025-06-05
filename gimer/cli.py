@@ -18,6 +18,15 @@ console = Console()
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool) -> None:
+    try:
+        merge(repo_url, target_branch, source_branch, dry_run)
+    finally:
+        if cleanup:
+            cleanup_repository(repo_url)
+
+
+def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
+    """Merge a source branch into a target branch."""
     git = Git(dry_run=dry_run)
     repo_path = get_github_repo_path(repo_url)
     os.chdir(repo_path)
@@ -54,9 +63,6 @@ def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, c
     console.print(f"⚡Pushing {target_branch} to origin...")
     git.push_branch(target_branch)
     console.print("⚡[green]Push completed successfully![/green]")
-
-    if cleanup:
-        cleanup_repository(repo_path)
 
 def cleanup_repository(repo_path: str) -> None:
     """Remove local repository after completion."""
