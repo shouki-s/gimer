@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import shutil
 
 import click
 from rich.console import Console
@@ -15,7 +16,8 @@ console = Console()
 @click.argument('source_branch')
 @click.argument('target_branch')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
-def main(repo_url: str, source_branch: str, target_branch: str, dry_run: bool) -> None:
+@click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
+def main(repo_url: str, source_branch: str, target_branch: str, dry_run: bool, cleanup: bool) -> None:
     git = Git(dry_run=dry_run)
     repo_path = get_github_repo_path(repo_url)
     os.chdir(repo_path)
@@ -51,6 +53,16 @@ def main(repo_url: str, source_branch: str, target_branch: str, dry_run: bool) -
     console.print(f"⚡⚡Pushing {target_branch} to origin...")
     git.push_branch(target_branch)
     console.print("⚡⚡[green]Push completed successfully![/green]")
+
+    if cleanup:
+        cleanup_repository(repo_path)
+
+def cleanup_repository(repo_path: str) -> None:
+    """Remove local repository after completion."""
+    console.print(f"⚡⚡Removing local repository at {repo_path}...")
+    os.chdir("..")  # 親ディレクトリに移動
+    shutil.rmtree(repo_path)
+    console.print("⚡⚡[green]Local repository removed.[/green]")
 
 if __name__ == '__main__':
     main()
