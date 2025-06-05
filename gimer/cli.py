@@ -24,7 +24,6 @@ def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, c
         if cleanup:
             cleanup_repository(repo_url)
 
-
 def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
     """Merge a source branch into a target branch."""
     git = Git(dry_run=dry_run)
