@@ -1,5 +1,9 @@
 import subprocess
 
+from rich.console import Console
+
+console = Console()
+
 
 class GitError(Exception):
     pass
@@ -10,7 +14,7 @@ class Git:
         self.dry_run = dry_run
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
-        print(f"≫ git {' '.join(args)}")
+        console.print(f"[yellow]≫ git {' '.join(args)}[/yellow]")
         if self.dry_run:
             return None
 
