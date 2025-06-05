@@ -10,8 +10,8 @@ class Git:
         self.dry_run = dry_run
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
+        print(f"git {' '.join(args)}")
         if self.dry_run:
-            print(f"git {' '.join(args)}")
             return None
 
         try:
