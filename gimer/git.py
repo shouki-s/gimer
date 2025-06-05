@@ -26,7 +26,7 @@ class Git:
             raise GitError(f"git {' '.join(args)} failed: {e.stderr}") from e
 
     def clone_repository_from_github(self, repo_url: str) -> None:
-        self._run_git_command("git", "clone", repo_url, '.')
+        self._run_git_command("clone", repo_url, '.')
 
     def get_current_branch(self) -> str:
         return self._run_git_command("rev-parse", "--abbrev-ref", "HEAD", capture_output=True).strip()
