@@ -19,14 +19,15 @@ dev = [
     "mypy>=1.8.0",
     "pytest>=8.0.0",
     "pytest-mock>=3.12.0",
+    "pyinstaller>=6.3.0",
 ]
 
 [project.scripts]
 gimer = "gimer.cli:main"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [tool.ruff]
 target-version = "py310"
@@ -67,3 +68,8 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.14.0",
+]

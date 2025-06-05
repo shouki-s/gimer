@@ -7,8 +7,8 @@ import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from .git import Git
-from .repositories import get_github_repo_path
+from gimer.git import Git
+from gimer.repositories import get_github_repo_path
 
 console = Console()
 
