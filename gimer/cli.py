@@ -52,11 +52,14 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
     except Exception as e:
         console.print("⚡[red]An error occurred during merge:[/red]")
         console.print(f"⚡{e!s}")
-        if "CONFLICT" in str(e):
-            console.print(
-                "\n⚡[yellow]Merge conflicts detected. Please resolve them manually.[/yellow]"
-            )
-        return
+        if "CONFLICT" not in str(e):
+            return
+        console.print("\n⚡[yellow]Merge conflicts detected. Opening editor for conflict resolution...[/yellow]")
+        git.resolve_conflicts()
+        if not git.is_merge_in_progress():
+            console.print("⚡[yellow]Merge was aborted. Exiting...[/yellow]")
+            return
+        git.commit_merge()
 
     console.print("⚡[green]Merge completed successfully![/green]")
     console.print(f"⚡Pushing {target_branch} to origin...")
@@ -65,7 +68,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
 
 def cleanup_repository(repo_path: str) -> None:
     """Remove local repository after completion."""
-    console.print(f"⚡Removing local repository at [yellow]{repo_path}[/yellow]...")
+    console.print(f"⚡Removing local repository: [yellow]{repo_path}[/yellow]")
     os.chdir("..")  # 親ディレクトリに移動
     shutil.rmtree(repo_path)
     console.print("⚡[green]Local repository removed.[/green]")

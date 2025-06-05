@@ -58,3 +58,23 @@ class Git:
 
     def merge_branch(self, target_branch: str) -> None:
         self._run_git_command("merge", target_branch)
+
+    def is_merge_in_progress(self) -> bool:
+        """Check if a merge is in progress."""
+        try:
+            self._run_git_command("rev-parse", "--verify", "MERGE_HEAD", capture_output=True)
+            return True
+        except GitError:
+            return False
+
+    def resolve_conflicts(self) -> None:
+        """Open editor to resolve merge conflicts."""
+        self._run_git_command("mergetool")
+
+    def abort_merge(self) -> None:
+        """Abort the current merge operation."""
+        self._run_git_command("merge", "--abort")
+
+    def commit_merge(self) -> None:
+        """Commit the merge after conflict resolution."""
+        self._run_git_command("commit", "-m", "Merge completed with conflict resolution")
