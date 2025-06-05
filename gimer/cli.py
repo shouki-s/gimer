@@ -35,12 +35,11 @@ def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) 
 
     if not git.check_working_directory_clean():
         console.print("⚡[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")
-        if Confirm.ask("⚡Do you want to continue? It will clean dirty files and reset the repository."):
-            console.print("⚡Cleaning working directory...")
-            git.clean_working_directory()
-            console.print("⚡[green]Working directory cleaned.[/green]")
-        else:
+        if not Confirm.ask("⚡Do you want to continue? It will clean dirty files and reset the repository."):
             return
+        console.print("⚡Cleaning working directory...")
+        git.clean_working_directory()
+        console.print("⚡[green]Working directory cleaned.[/green]")
 
     console.print(f"\n⚡[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
     git.pull_branch(source_branch)
