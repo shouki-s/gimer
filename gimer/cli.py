@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import shutil
+from pathlib import Path
 
 import click
 from rich.console import Console
@@ -18,16 +19,16 @@ console = Console()
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool) -> None:
+    repo_path = get_github_repo_path(repo_url)
     try:
-        repo_path = merge(repo_url, target_branch, source_branch, dry_run)
+        merge(repo_path, repo_url, target_branch, source_branch, dry_run)
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
 
-def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
+def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
     """Merge a source branch into a target branch."""
     git = Git(dry_run=dry_run)
-    repo_path = get_github_repo_path(repo_url)
     os.chdir(repo_path)
     if not (repo_path / '.git').exists():
         console.print(f"⚡Cloning repository to {repo_path}")
