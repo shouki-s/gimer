@@ -1,24 +1,27 @@
-[tool.poetry]
+[project]
 name = "gimer"
 version = "0.1.0"
 description = "Gitのマージを楽にするCLIツール"
-authors = ["Your Name <your.email@example.com>"]
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+dependencies = [
+    "click>=8.2.1",
+    "gitpython>=3.1.44",
+    "rich>=14.0.0",
+]
+requires-python = ">=3.10"
 readme = "README.md"
-packages = [{include = "gimer"}]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-click = "^8.2.1"
-gitpython = "^3.1.44"
-rich = "^14.0.0"
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.3.0",
+    "mypy>=1.8.0",
+    "pytest>=8.0.0",
+    "pytest-mock>=3.12.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.3.0"
-mypy = "^1.8.0"
-pytest = "^8.0.0"
-pytest-mock = "^3.12.0"
-
-[tool.poetry.scripts]
+[project.scripts]
 gimer = "gimer.cli:main"
 
 [build-system]
