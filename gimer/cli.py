@@ -19,10 +19,10 @@ console = Console()
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool) -> None:
     try:
-        merge(repo_url, target_branch, source_branch, dry_run)
+        repo_path = merge(repo_url, target_branch, source_branch, dry_run)
     finally:
-        if cleanup:
-            cleanup_repository(repo_url)
+        if cleanup and repo_path:
+            cleanup_repository(repo_path)
 
 def merge(repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
     """Merge a source branch into a target branch."""
