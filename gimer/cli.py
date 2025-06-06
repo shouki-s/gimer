@@ -30,6 +30,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
     """Merge a source branch into a target branch."""
     git = Git(dry_run=dry_run)
     os.chdir(repo_path)
+    console.print(f"⚡[bold]working directory:[/bold] {repo_path}")
     if not (repo_path / '.git').exists():
         console.print(f"⚡Cloning repository to {repo_path}")
         git.clone_repository_from_github(repo_url)

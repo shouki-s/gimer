@@ -1,6 +1,7 @@
 import subprocess
 
 from rich.console import Console
+from rich.prompt import Confirm
 
 console = Console()
 
@@ -17,6 +18,9 @@ class Git:
         console.print(f"[yellow]≫ git {' '.join(args)}[/yellow]")
         if self.dry_run:
             return None
+
+        if not Confirm.ask("⚡Do you want to continue?"):
+            return
 
         try:
             result = subprocess.run(
