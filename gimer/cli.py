@@ -41,7 +41,6 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
     """Merge a source branch into a target branch."""
     git = Git(**config)
     os.chdir(repo_path)
-    console.print(f"⚡[bold]working directory:[/bold] {repo_path}")
     if not (repo_path / '.git').exists():
         git.clone_repository_from_github(repo_url)
 
@@ -76,6 +75,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
 def cleanup_repository(repo_path: str) -> None:
     """Remove local repository after completion."""
     os.chdir("..")  # 親ディレクトリに移動
+    console.print(f"⚡[bold]Removing...[/bold] {repo_path}")
     shutil.rmtree(repo_path)
 
 if __name__ == '__main__':
