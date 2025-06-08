@@ -18,17 +18,18 @@ console = Console()
 @click.argument('source_branch')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
-def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool) -> None:
+@click.option('--confirm', type=click.Choice(['origin', 'all']), help='Confirm before executing git commands. origin: only for commands affecting origin, all: for all commands')
+def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool, confirm: str | None) -> None:
     repo_path = get_github_repo_path(repo_url)
     try:
-        merge(repo_path, repo_url, target_branch, source_branch, dry_run)
+        merge(repo_path, repo_url, target_branch, source_branch, dry_run, confirm)
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
 
-def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, dry_run: bool) -> None:
+def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, dry_run: bool, confirm: str | None) -> None:
     """Merge a source branch into a target branch."""
-    git = Git(dry_run=dry_run)
+    git = Git(dry_run=dry_run, confirm=confirm)
     os.chdir(repo_path)
     if not (repo_path / '.git').exists():
         console.print(f"⚡Cloning repository to {repo_path}")
