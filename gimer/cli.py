@@ -22,16 +22,17 @@ console = Console()
 def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool, confirm: str | None) -> None:
     repo_path = get_github_repo_path(repo_url)
     try:
-        merge(repo_path, repo_url, target_branch, source_branch, dry_run, confirm)
+        config = {"dry_run": dry_run, "confirm": confirm}
+        merge(repo_path, repo_url, target_branch, source_branch, config)
     except UserAbortedError:
         console.print("⚡[yellow]Operation cancelled.[/yellow]")
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
 
-def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, dry_run: bool, confirm: str | None) -> None:
+def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, config: dict) -> None:
     """Merge a source branch into a target branch."""
-    git = Git(dry_run=dry_run, confirm=confirm)
+    git = Git(**config)
     os.chdir(repo_path)
     console.print(f"⚡[bold]working directory:[/bold] {repo_path}")
     if not (repo_path / '.git').exists():
