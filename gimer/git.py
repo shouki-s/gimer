@@ -1,6 +1,7 @@
 import subprocess
 
 from rich.console import Console
+from rich.prompt import Confirm
 
 console = Console()
 
@@ -10,13 +11,28 @@ class GitError(Exception):
 
 
 class Git:
-    def __init__(self, dry_run: bool = False) -> None:
+    def __init__(self, dry_run: bool = False, confirm: str | None = None) -> None:
         self.dry_run = dry_run
+        self.confirm = confirm
+
+    def _should_confirm(self, *args: str) -> bool:
+        if not self.confirm:
+            return False
+        if self.confirm == "all":
+            return True
+        if self.confirm == "origin":
+            # Check if command affects origin
+            origin_commands = {"push"}
+            return any(cmd in args for cmd in origin_commands)
+        return False
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
         console.print(f"[yellow]≫ git {' '.join(args)}[/yellow]")
         if self.dry_run:
             return None
+
+        if self._should_confirm(*args) and not Confirm.ask("⚡Execute this command?"):
+            raise GitError("Command execution cancelled by user")
 
         try:
             result = subprocess.run(
@@ -49,6 +65,9 @@ class Git:
 
     def checkout_branch(self, branch: str) -> None:
         self._run_git_command("checkout", branch)
+
+    def fetch(self) -> None:
+        self._run_git_command("fetch", "origin")
 
     def pull_branch(self, branch: str) -> None:
         self._run_git_command("pull", "origin", branch)
