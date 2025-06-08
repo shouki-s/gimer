@@ -74,7 +74,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
 
 def cleanup_repository(repo_path: str) -> None:
     """Remove local repository after completion."""
-    os.chdir("..")  # 親ディレクトリに移動
+    os.chdir("..")  # move to parent directory before removing
     console.print(f"⚡[bold]Removing...[/bold] {repo_path}")
     shutil.rmtree(repo_path)
 
