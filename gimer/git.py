@@ -50,6 +50,9 @@ class Git:
     def checkout_branch(self, branch: str) -> None:
         self._run_git_command("checkout", branch)
 
+    def fetch(self) -> None:
+        self._run_git_command("fetch", "origin")
+
     def pull_branch(self, branch: str) -> None:
         self._run_git_command("pull", "origin", branch)
 

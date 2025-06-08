@@ -43,10 +43,11 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
         console.print("⚡[green]Working directory cleaned.[/green]")
 
     console.print(f"\n⚡[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
-    git.pull_branch(source_branch)
+    git.fetch()
     git.checkout_branch(source_branch)
-    git.pull_branch(target_branch)
+    git.pull_branch(source_branch)
     git.checkout_branch(target_branch)
+    git.pull_branch(target_branch)
     try:
         git.merge_branch(source_branch)
     except Exception as e:
