@@ -18,7 +18,7 @@ console = Console()
 @click.argument('source_branch')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
-@click.option('--confirm', type=click.Choice(['origin', 'all']), help='Confirm before executing git commands. origin: only for commands affecting origin, all: for all commands')
+@click.option('--confirm', is_flag=False, flag_value='origin', type=click.Choice(['origin', 'all']), help='Confirm before executing all or affecting origin git commands')
 def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, cleanup: bool, confirm: str | None) -> None:
     repo_path = get_github_repo_path(repo_url)
     try:

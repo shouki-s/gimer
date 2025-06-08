@@ -15,7 +15,7 @@ class Git:
         self.dry_run = dry_run
         self.confirm = confirm
 
-    def _should_confirm(self, *args: str) -> bool:
+    def _should_confirm(self, command: str) -> bool:
         if not self.confirm:
             return False
         if self.confirm == "all":
@@ -23,7 +23,7 @@ class Git:
         if self.confirm == "origin":
             # Check if command affects origin
             origin_commands = {"push"}
-            return any(cmd in args for cmd in origin_commands)
+            return command in origin_commands
         return False
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
@@ -31,7 +31,7 @@ class Git:
         if self.dry_run:
             return None
 
-        if self._should_confirm(*args) and not Confirm.ask("⚡Execute this command?"):
+        if self._should_confirm(args[0]) and not Confirm.ask("⚡Execute this command?"):
             raise GitError("Command execution cancelled by user")
 
         try:
