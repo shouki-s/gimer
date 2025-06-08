@@ -10,6 +10,10 @@ class GitError(Exception):
     pass
 
 
+class UserAbortedError(Exception):
+    """Exception raised when the user aborts the operation."""
+
+
 class Git:
     def __init__(self, dry_run: bool = False, confirm: str | None = None) -> None:
         self.dry_run = dry_run
@@ -32,7 +36,7 @@ class Git:
             return None
 
         if self._should_confirm(args[0]) and not Confirm.ask("⚡Execute this command?"):
-            raise GitError("Command execution cancelled by user")
+            raise UserAbortedError("Command execution cancelled by user")
 
         try:
             result = subprocess.run(

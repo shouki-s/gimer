@@ -7,7 +7,7 @@ import click
 from rich.console import Console
 from rich.prompt import Confirm
 
-from gimer.git import Git
+from gimer.git import Git, UserAbortedError
 from gimer.repositories import get_github_repo_path
 
 console = Console()
@@ -23,6 +23,8 @@ def main(repo_url: str, target_branch: str, source_branch: str, dry_run: bool, c
     repo_path = get_github_repo_path(repo_url)
     try:
         merge(repo_path, repo_url, target_branch, source_branch, dry_run, confirm)
+    except UserAbortedError:
+        console.print("⚡[yellow]Operation cancelled.[/yellow]")
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
