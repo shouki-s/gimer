@@ -33,18 +33,14 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
     os.chdir(repo_path)
     console.print(f"⚡[bold]working directory:[/bold] {repo_path}")
     if not (repo_path / '.git').exists():
-        console.print(f"⚡Cloning repository to {repo_path}")
         git.clone_repository_from_github(repo_url)
 
     if not git.check_working_directory_clean():
         console.print("⚡[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")
         if not Confirm.ask("⚡Do you want to continue? It will clean dirty files and reset the repository."):
             return
-        console.print("⚡Cleaning working directory...")
         git.clean_working_directory()
-        console.print("⚡[green]Working directory cleaned.[/green]")
 
-    console.print(f"\n⚡[bold]Starting merge:[/bold] {target_branch} ← {source_branch}")
     git.fetch()
     git.checkout_branch(source_branch)
     git.pull_branch(source_branch)
@@ -64,17 +60,13 @@ def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str
             return
         git.commit_merge()
 
-    console.print("⚡[green]Merge completed successfully![/green]")
-    console.print(f"⚡Pushing {target_branch} to origin...")
     git.push_branch(target_branch)
-    console.print("⚡[green]Push completed successfully![/green]")
+    console.print("⚡[green]Merge completed successfully![/green]")
 
 def cleanup_repository(repo_path: str) -> None:
     """Remove local repository after completion."""
-    console.print(f"⚡Removing local repository: [yellow]{repo_path}[/yellow]")
     os.chdir("..")  # 親ディレクトリに移動
     shutil.rmtree(repo_path)
-    console.print("⚡[green]Local repository removed.[/green]")
 
 if __name__ == '__main__':
     main()
