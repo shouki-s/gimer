@@ -14,14 +14,14 @@ console = Console()
 
 @click.command()
 @click.argument('repo_url')
-@click.argument('source_branch')
+@click.option('--source', required=True, help='Source branch to merge from')
 @click.option('--target', required=True, help='Target branch to merge into')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 @click.option('--confirm', is_flag=False, flag_value='origin', type=click.Choice(['origin', 'all']), help='Confirm before executing all or affecting origin git commands')
 def main(  # noqa: PLR0913
     repo_url: str,
-    source_branch: str,
+    source: str,
     target: str,
     dry_run: bool,
     cleanup: bool,
@@ -30,7 +30,7 @@ def main(  # noqa: PLR0913
     repo_path = get_github_repo_path(repo_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
-        merge(repo_path, repo_url, target, source_branch, config)
+        merge(repo_path, repo_url, target, source, config)
     except UserAbortedError:
         console.print("⚡[yellow]Operation cancelled.[/yellow]")
     finally:

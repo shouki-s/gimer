@@ -17,11 +17,12 @@ pip install gimer
 ## Usage
 
 ```bash
-gimer <repository_url> <source_branch> --target <target_branch> [OPTIONS]
+gimer <repository_url> --source <source_branch> --target <target_branch> [OPTIONS]
 ```
 
 ### Options
 
+- `--source`: Source branch to merge from (required)
 - `--target`: Target branch to merge into (required)
 - `--dry-run`: Show what would be done without actually doing it
 - `--cleanup`: Remove local repository after completion
@@ -32,7 +33,7 @@ gimer <repository_url> <source_branch> --target <target_branch> [OPTIONS]
 ### Example
 
 ```bash
-gimer https://github.com/username/repo.git feature-branch --target main
+gimer https://github.com/username/repo.git --source feature-branch --target main
 ```
 
 ## Development
