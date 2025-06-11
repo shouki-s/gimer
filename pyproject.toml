@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "click>=8.2.1",
     "gitpython>=3.1.44",
+    "questionary>=2.1.0",
     "rich>=14.0.0",
 ]
 requires-python = ">=3.10"
