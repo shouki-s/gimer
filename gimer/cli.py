@@ -4,6 +4,7 @@ import shutil
 from pathlib import Path
 
 import click
+import questionary
 from rich.console import Console
 from rich.prompt import Confirm
 
@@ -15,18 +16,20 @@ console = Console()
 @click.command()
 @click.argument('repo_url')
 @click.option('--source', required=True, help='Source branch to merge from')
-@click.option('--target', required=True, help='Target branch to merge into')
+@click.option('--target', help='Target branch to merge into')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 @click.option('--confirm', is_flag=False, flag_value='origin', type=click.Choice(['origin', 'all']), help='Confirm before executing all or affecting origin git commands')
 def main(  # noqa: PLR0913
     repo_url: str,
     source: str,
-    target: str,
+    target: str | None,
     dry_run: bool,
     cleanup: bool,
     confirm: str | None,
 ) -> None:
+    if target is None:
+        target = questionary.autocomplete("⚡Enter target branch to merge into", choices=["main", "develop", "feature/123"]).ask()
     repo_path = get_github_repo_path(repo_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
