@@ -28,12 +28,13 @@ def main(  # noqa: PLR0913
     cleanup: bool,
     confirm: str | None,
 ) -> None:
+    clone_url = repo_url
     if target is None:
         target = questionary.autocomplete("⚡Enter target branch to merge into", choices=["main", "develop", "feature/123"]).ask()
-    repo_path = get_github_repo_path(repo_url)
+    repo_path = get_github_repo_path(clone_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
-        merge(repo_path, repo_url, target, source, config)
+        merge(repo_path, clone_url, target, source, config)
     except UserAbortedError:
         console.print("⚡[yellow]Operation cancelled.[/yellow]")
     finally:
