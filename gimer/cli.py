@@ -14,17 +14,19 @@ from gimer.git import Git, UserAbortedError
 from gimer.repositories import get_github_repo_path
 
 console = Console()
+token = os.environ.get("GITHUB_TOKEN")
+gh = Github(token) if token else Github()
 
 @click.command()
 @click.argument('repo_url')
-@click.option('--source', required=True, help='Source branch to merge from')
+@click.option('--source', help='Source branch to merge from')
 @click.option('--target', help='Target branch to merge into')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
 @click.option('--confirm', is_flag=False, flag_value='origin', type=click.Choice(['origin', 'all']), help='Confirm before executing all or affecting origin git commands')
 def main(  # noqa: PLR0913
     repo_url: str,
-    source: str,
+    source: str | None,
     target: str | None,
     dry_run: bool,
     cleanup: bool,
@@ -41,11 +43,14 @@ def main(  # noqa: PLR0913
         if cleanup and repo_path:
             cleanup_repository(repo_path)
 
-def determine_merge_info(repo_url: str, source: str, target: str | None) -> tuple[str, str, str]:
+def determine_merge_info(repo_url: str, source: str | None, target: str | None) -> tuple[str, str, str]:
     if is_github_pr_url(repo_url):
         clone_url = get_clone_url_from_pr_url(repo_url)
     else:
         clone_url = repo_url
+    if source is None:
+        if is_github_pr_url(repo_url):
+            source = get_source_branch_from_pr_url(repo_url)
     if target is None:
         target = inquirer.fuzzy(
             "Select target branch to merge into",
@@ -60,10 +65,13 @@ def is_github_pr_url(url: str) -> bool:
 def get_clone_url_from_pr_url(pr_url: str) -> str:
     """Fetch the clone_url via GitHub API from a PR URL."""
     owner, repo, pr_number = re.match(r"https://github.com/([^/]+)/([^/]+)/pull/(\d+)", pr_url).groups()
-    token = os.environ.get("GITHUB_TOKEN")
-    gh = Github(token) if token else Github()
     pr = gh.get_repo(f"{owner}/{repo}").get_pull(int(pr_number))
     return pr.head.repo.clone_url
+
+def get_source_branch_from_pr_url(pr_url: str) -> str:
+    owner, repo, pr_number = re.match(r"https://github.com/([^/]+)/([^/]+)/pull/(\d+)", pr_url).groups()
+    pr = gh.get_repo(f"{owner}/{repo}").get_pull(int(pr_number))
+    return pr.head.ref
 
 def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, config: dict) -> None:
     """Merge a source branch into a target branch."""
