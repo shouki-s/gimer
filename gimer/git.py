@@ -53,9 +53,6 @@ class Git:
     def clone_repository(self, repo_url: str) -> None:
         self._run_git_command("clone", repo_url, os.getcwd())
 
-    def get_current_branch(self) -> str:
-        return self._run_git_command("rev-parse", "--abbrev-ref", "HEAD", capture_output=True).strip()
-
     def get_all_branches(self) -> list[str]:
         branches = self._run_git_command("branch", "--format=%(refname:short)", "--remotes", capture_output=True)
         return [b.replace("origin/", "") for b in branches.splitlines() if b and b != "origin/HEAD"]
