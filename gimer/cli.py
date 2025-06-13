@@ -5,8 +5,8 @@ import shutil
 from pathlib import Path
 
 import click
-import questionary
 from github import Github
+from InquirerPy import inquirer
 from rich.console import Console
 from rich.prompt import Confirm
 
@@ -35,7 +35,10 @@ def main(  # noqa: PLR0913
     else:
         clone_url = repo_url
     if target is None:
-        target = questionary.select("⚡Enter target branch to merge into", choices=["main", "develop", "feature/123"]).ask()
+        target = inquirer.fuzzy(
+            "Select target branch to merge into",
+            choices=["main", "develop", "feature/123"],
+        ).execute()
     repo_path = get_github_repo_path(clone_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
