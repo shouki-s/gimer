@@ -57,8 +57,8 @@ class Git:
         return self._run_git_command("rev-parse", "--abbrev-ref", "HEAD", capture_output=True).strip()
 
     def get_all_branches(self) -> list[str]:
-        branches = self._run_git_command("branch", "--format=%(refname:short)", capture_output=True)
-        return [b for b in branches.splitlines() if b]
+        branches = self._run_git_command("branch", "--format=%(refname:short)", "--remotes", capture_output=True)
+        return [b.replace("origin/", "") for b in branches.splitlines() if b and b != "origin/HEAD"]
 
     def check_working_directory_clean(self) -> bool:
         status = self._run_git_command("status", "--porcelain", capture_output=True)
