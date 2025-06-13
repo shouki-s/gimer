@@ -47,7 +47,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
     git = Git(**config)
     os.chdir(repo_path)
     if not (repo_path / '.git').exists():
-        git.clone_repository_from_github(repo_url)
+        git.clone_repository(repo_url)
 
     if not git.check_working_directory_clean():
         console.print("⚡[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")

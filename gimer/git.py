@@ -50,7 +50,7 @@ class Git:
         except subprocess.CalledProcessError as e:
             raise GitError(f"git {' '.join(args)} failed: {e.stderr}") from e
 
-    def clone_repository_from_github(self, repo_url: str) -> None:
+    def clone_repository(self, repo_url: str) -> None:
         self._run_git_command("clone", repo_url, os.getcwd())
 
     def get_current_branch(self) -> str:
