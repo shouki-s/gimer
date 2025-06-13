@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 import os
+import re
 import shutil
 from pathlib import Path
 
 import click
 import questionary
+from github import Github
 from rich.console import Console
 from rich.prompt import Confirm
 
@@ -28,9 +30,12 @@ def main(  # noqa: PLR0913
     cleanup: bool,
     confirm: str | None,
 ) -> None:
-    clone_url = repo_url
+    if is_github_pr_url(repo_url):
+        clone_url = get_clone_url_from_pr_url(repo_url)
+    else:
+        clone_url = repo_url
     if target is None:
-        target = questionary.autocomplete("⚡Enter target branch to merge into", choices=["main", "develop", "feature/123"]).ask()
+        target = questionary.select("⚡Enter target branch to merge into", choices=["main", "develop", "feature/123"]).ask()
     repo_path = get_github_repo_path(clone_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
@@ -40,6 +45,18 @@ def main(  # noqa: PLR0913
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
+
+def is_github_pr_url(url: str) -> bool:
+    pr_pattern = r"https://github.com/[^/]+/[^/]+/pull/\d+"
+    return re.match(pr_pattern, url) is not None
+
+def get_clone_url_from_pr_url(pr_url: str) -> str:
+    """Fetch the clone_url via GitHub API from a PR URL."""
+    owner, repo, pr_number = re.match(r"https://github.com/([^/]+)/([^/]+)/pull/(\d+)", pr_url).groups()
+    token = os.environ.get("GITHUB_TOKEN")
+    gh = Github(token) if token else Github()
+    pr = gh.get_repo(f"{owner}/{repo}").get_pull(int(pr_number))
+    return pr.head.repo.clone_url
 
 def merge(repo_path: Path, repo_url: str, target_branch: str, source_branch: str, config: dict) -> None:
     """Merge a source branch into a target branch."""
