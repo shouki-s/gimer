@@ -30,15 +30,7 @@ def main(  # noqa: PLR0913
     cleanup: bool,
     confirm: str | None,
 ) -> None:
-    if is_github_pr_url(repo_url):
-        clone_url = get_clone_url_from_pr_url(repo_url)
-    else:
-        clone_url = repo_url
-    if target is None:
-        target = inquirer.fuzzy(
-            "Select target branch to merge into",
-            choices=["main", "develop", "feature/123"],
-        ).execute()
+    clone_url, source, target = determine_merge_info(repo_url, source, target)
     repo_path = get_github_repo_path(clone_url)
     try:
         config = {"dry_run": dry_run, "confirm": confirm}
@@ -48,6 +40,18 @@ def main(  # noqa: PLR0913
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
+
+def determine_merge_info(repo_url: str, source: str, target: str | None) -> tuple[str, str, str]:
+    if is_github_pr_url(repo_url):
+        clone_url = get_clone_url_from_pr_url(repo_url)
+    else:
+        clone_url = repo_url
+    if target is None:
+        target = inquirer.fuzzy(
+            "Select target branch to merge into",
+            choices=["main", "develop", "feature/123"],
+        ).execute()
+    return clone_url, source, target
 
 def is_github_pr_url(url: str) -> bool:
     pr_pattern = r"https://github.com/[^/]+/[^/]+/pull/\d+"
