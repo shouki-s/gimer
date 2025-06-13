@@ -98,4 +98,4 @@ class Git:
 
     def commit_merge(self) -> None:
         """Commit the merge after conflict resolution."""
-        self._run_git_command("commit", "-m", "Merge completed with conflict resolution")
+        self._run_git_command("commit")
