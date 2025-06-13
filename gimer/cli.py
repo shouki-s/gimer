@@ -56,7 +56,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
         git.clean_working_directory()
 
     git.fetch()
-    branches = git.get_all_branches()
+    branches = git.get_branches()
     if not source_branch:
         source_branch = inquirer.fuzzy(
             "Select source branch to merge from",
