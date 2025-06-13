@@ -1,8 +1,8 @@
 import os
 import subprocess
 
+from InquirerPy import inquirer
 from rich.console import Console
-from rich.prompt import Confirm
 
 console = Console()
 
@@ -36,7 +36,7 @@ class Git:
         if self.dry_run:
             return None
 
-        if self._should_confirm(args[0]) and not Confirm.ask("⚡Execute this command?"):
+        if self._should_confirm(args[0]) and not inquirer.confirm("Execute this command?",default=True).execute():
             raise UserAbortedError("Command execution cancelled by user")
 
         try:
