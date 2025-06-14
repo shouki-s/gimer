@@ -6,7 +6,7 @@ A CLI tool to make Git merge operations easier.
 
 ### From Binary (Recommended)
 
-Download the latest binary from the [Releases](https://github.com/yourusername/gimer/releases) page.
+Download the latest binary from the [Releases](https://github.com/shouki-s/gimer/releases) page.
 
 ### From Source
 
@@ -40,7 +40,7 @@ gimer https://github.com/username/repo.git --source feature-branch --target main
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/gimer.git
+git clone https://github.com/shouki-s/gimer.git
 cd gimer
 
 # Install dependencies
