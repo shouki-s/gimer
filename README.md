@@ -47,7 +47,7 @@ cd gimer
 uv sync --all-extras
 
 # Run tests
-pytest
+uv run pytest
 
 # Build package
 uv build
