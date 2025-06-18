@@ -21,28 +21,30 @@ class TestGit:
 
     @pytest.fixture
     def git(self):
-        return Git(dry_run=False, confirm=None)
+        return Git(dry_run=False, no_confirm=True, confirm_all=False)
 
     @pytest.fixture
     def git_dry_run(self):
-        return Git(dry_run=True, confirm=None)
+        return Git(dry_run=True, no_confirm=False, confirm_all=False)
 
     @pytest.fixture
     def git_confirm_all(self):
-        return Git(dry_run=False, confirm="all")
+        return Git(dry_run=False, no_confirm=False, confirm_all=True)
 
     @pytest.fixture
     def git_confirm_origin(self):
-        return Git(dry_run=False, confirm="origin")
+        return Git(dry_run=False, no_confirm=False, confirm_all=False)
 
     def test_init(self):
         git = Git()
         assert git.dry_run is False
-        assert git.confirm is None
+        assert git.no_confirm is False
+        assert git.confirm_all is False
 
-        git = Git(dry_run=True, confirm="all")
+        git = Git(dry_run=True, no_confirm=True, confirm_all=True)
         assert git.dry_run is True
-        assert git.confirm == "all"
+        assert git.no_confirm is True
+        assert git.confirm_all is True
 
     def test_should_confirm_no_confirm(self, git):
         assert git._should_confirm("push") is False

@@ -48,13 +48,13 @@ class TestCLI:
                 '--target', 'main',
                 '--dry-run',
                 '--cleanup',
-                '--confirm', 'all'
+                '--confirm-all',
             ])
             assert result.exit_code == 0
             args = mock_merge.call_args[0]
             config = args[4]
             assert config['dry_run'] is True
-            assert config['confirm'] == 'all'
+            assert config['confirm_all'] is True
 
     def test_main_user_aborted(self, runner):
         with patch('gimer.cli.merge') as mock_merge:
@@ -63,8 +63,7 @@ class TestCLI:
             assert result.exit_code == 0
 
     def test_main_with_cleanup(self, runner):
-        with patch('gimer.cli.merge') as mock_merge, \
-             patch('gimer.cli.cleanup_repository') as mock_cleanup:
+        with patch('gimer.cli.cleanup_repository') as mock_cleanup:
             result = runner.invoke(main, [
                 'https://github.com/user/repo.git',
                 '--cleanup'
@@ -77,7 +76,7 @@ class TestCLI:
         self.mock_inquirer_fuzzy.return_value.execute.side_effect = ['develop', 'main']
 
         repo_path = self.mock_get_github_repo_path.return_value
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', None, None, config)
 
@@ -94,7 +93,7 @@ class TestCLI:
         repo_path = self.mock_get_github_repo_path.return_value
         (repo_path / '.git').exists.return_value = False
 
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', 'main', 'main', config)
 
@@ -106,7 +105,7 @@ class TestCLI:
         self.mock_confirm_ask.return_value = True
 
         repo_path = self.mock_get_github_repo_path.return_value
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', 'main', 'main', config)
 
@@ -118,7 +117,7 @@ class TestCLI:
         self.mock_confirm_ask.return_value = False
 
         repo_path = self.mock_get_github_repo_path.return_value
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', 'main', 'main', config)
 
@@ -130,7 +129,7 @@ class TestCLI:
         mock_git_instance.is_merge_in_progress.return_value = True
 
         repo_path = self.mock_get_github_repo_path.return_value
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', 'main', 'main', config)
 
@@ -143,7 +142,7 @@ class TestCLI:
         mock_git_instance.is_merge_in_progress.return_value = False
 
         repo_path = self.mock_get_github_repo_path.return_value
-        config = {'dry_run': False, 'confirm': None}
+        config = {'dry_run': False, 'no_confirm': False, 'confirm_all': False}
 
         merge(repo_path, 'https://github.com/user/repo.git', 'main', 'main', config)
 

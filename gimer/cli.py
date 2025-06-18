@@ -22,18 +22,20 @@ gh = Github(token) if token else Github()
 @click.option('--target', help='Target branch to merge into')
 @click.option('--dry-run', is_flag=True, help='Show what would be done without actually doing it')
 @click.option('--cleanup', is_flag=True, help='Remove local repository after completion')
-@click.option('--confirm', is_flag=False, flag_value='origin', type=click.Choice(['origin', 'all']), help='Confirm before executing all or affecting origin git commands')
+@click.option('-y', '--no-confirm', is_flag=True, help="Do not confirm before executing git commands")
+@click.option('--confirm-all', is_flag=True, help="Confirm before executing all git commands")
 def main(  # noqa: PLR0913
     repo_url: str,
     source: str | None,
     target: str | None,
     dry_run: bool,
     cleanup: bool,
-    confirm: str | None,
+    no_confirm: bool,
+    confirm_all: bool,
 ) -> None:
     repo_path = get_github_repo_path(repo_url)
     try:
-        config = {"dry_run": dry_run, "confirm": confirm}
+        config = {"dry_run": dry_run, "no_confirm": no_confirm, "confirm_all": confirm_all}
         merge(repo_path, repo_url, target, source, config)
     except UserAbortedError:
         console.print("⚡[yellow]Operation cancelled.[/yellow]")
@@ -66,6 +68,8 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
             "Select target branch to merge into",
             choices=branches,
         ).execute()
+    if not (config["no_confirm"] or Confirm.ask(f"⚡Do you want to git merge {target_branch} ← {source_branch}?")):
+        return
     git.checkout_branch(source_branch)
     git.pull_branch(source_branch)
     git.checkout_branch(target_branch)

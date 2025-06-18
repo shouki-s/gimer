@@ -16,20 +16,18 @@ class UserAbortedError(Exception):
 
 
 class Git:
-    def __init__(self, dry_run: bool = False, confirm: str | None = None) -> None:
+    def __init__(self, dry_run: bool = False, no_confirm: bool = False, confirm_all: bool = False) -> None:
         self.dry_run = dry_run
-        self.confirm = confirm
+        self.no_confirm = no_confirm
+        self.confirm_all = confirm_all
 
     def _should_confirm(self, command: str) -> bool:
-        if not self.confirm:
+        if self.no_confirm:
             return False
-        if self.confirm == "all":
+        if self.confirm_all:
             return True
-        if self.confirm == "origin":
-            # Check if command affects origin
-            origin_commands = {"push"}
-            return command in origin_commands
-        return False
+        # Check if command affects origin
+        return command in {"push"}
 
     def _run_git_command(self, *args: str, capture_output: bool = False) -> str | None:
         console.print(f"[yellow]≫ git {' '.join(args)}[/yellow]")
