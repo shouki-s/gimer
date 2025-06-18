@@ -165,7 +165,7 @@ class TestGit:
     def test_merge_branch(self, git):
         git.merge_branch("develop")
         self.mock_subprocess_run.assert_called_once_with(
-            ["git", "merge", "develop"],
+            ["git", "merge", "--no-edit", "develop"],
             check=True,
             capture_output=False,
             text=True

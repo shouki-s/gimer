@@ -78,7 +78,7 @@ class Git:
         self._run_git_command("push", "origin", branch)
 
     def merge_branch(self, target_branch: str) -> None:
-        self._run_git_command("merge", target_branch)
+        self._run_git_command("merge", "--no-edit", target_branch)
 
     def is_merge_in_progress(self) -> bool:
         """Check if a merge is in progress."""
