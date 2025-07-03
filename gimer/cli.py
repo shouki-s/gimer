@@ -91,7 +91,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
     git.push_branch(target_branch)
     console.print("⚡[green]Merge completed successfully![/green]")
 
-def cleanup_repository(repo_path: str) -> None:
+def cleanup_repository(repo_path: Path) -> None:
     """Remove local repository after completion."""
     os.chdir("..")  # move to parent directory before removing
     console.print(f"⚡[bold]Removing...[/bold] {repo_path}")

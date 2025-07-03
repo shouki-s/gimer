@@ -53,6 +53,8 @@ class Git:
 
     def get_branches(self) -> list[str]:
         branches = self._run_git_command("branch", "--format=%(refname:short)", "--remotes", capture_output=True)
+        if not branches:
+            return []
         return [b.replace("origin/", "") for b in branches.splitlines() if b and b != "origin/HEAD"]
 
     def check_working_directory_clean(self) -> bool:
