@@ -68,7 +68,7 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
             "Select target branch to merge into",
             choices=branches,
         ).execute()
-    if not (config["no_confirm"] or Confirm.ask(f"⚡Do you want to git merge {target_branch} ← {source_branch}?")):
+    if not (config["no_confirm"] or Confirm.ask(f"⚡Do you want to git merge {target_branch} ← {source_branch}?", default=True)):
         return
     git.checkout_branch(source_branch)
     git.pull_branch(source_branch)
@@ -81,7 +81,10 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
         console.print(f"⚡{e!s}")
         if "CONFLICT" not in str(e):
             return
-        console.print("\n⚡[yellow]Merge conflicts detected. Opening editor for conflict resolution...[/yellow]")
+        console.print("\n⚡[yellow]Merge conflicts detected.[/yellow]")
+        if config["no_confirm"] or not Confirm.ask("⚡Do you want to resolve conflicts manually?", default=True):
+            git.abort_merge()
+            return
         git.resolve_conflicts()
         if not git.is_merge_in_progress():
             console.print("⚡[yellow]Merge was aborted. Exiting...[/yellow]")

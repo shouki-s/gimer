@@ -70,6 +70,7 @@ class TestGit:
             ["git", "status"],
             check=True,
             capture_output=True,
+            stderr=subprocess.STDOUT,
             text=True
         )
         assert result == "output"
@@ -105,6 +106,7 @@ class TestGit:
             ["git", "clone", "https://github.com/user/repo.git", "/current/dir"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -134,6 +136,7 @@ class TestGit:
             ["git", "checkout", "develop"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -143,6 +146,7 @@ class TestGit:
             ["git", "fetch", "origin"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -152,6 +156,7 @@ class TestGit:
             ["git", "pull", "origin", "main"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -161,6 +166,7 @@ class TestGit:
             ["git", "push", "origin", "main"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -170,7 +176,8 @@ class TestGit:
             ["git", "merge", "--no-edit", "develop"],
             check=True,
             capture_output=False,
-            text=True
+            stderr=subprocess.STDOUT,
+            text=True,
         )
 
     def test_is_merge_in_progress_true(self, git):
@@ -187,7 +194,8 @@ class TestGit:
             ["git", "mergetool"],
             check=True,
             capture_output=False,
-            text=True
+            stderr=subprocess.STDOUT,
+            text=True,
         )
 
     def test_abort_merge(self, git):
@@ -196,6 +204,7 @@ class TestGit:
             ["git", "merge", "--abort"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
 
@@ -205,5 +214,6 @@ class TestGit:
             ["git", "commit"],
             check=True,
             capture_output=False,
+            stderr=subprocess.STDOUT,
             text=True
         )
