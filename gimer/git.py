@@ -42,6 +42,7 @@ class Git:
                 ["git", *args],
                 check=True,
                 capture_output=capture_output,
+                stderr=subprocess.STDOUT,
                 text=True
             )
             return result.stdout if capture_output else None
