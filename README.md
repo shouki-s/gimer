@@ -36,6 +36,30 @@ gimer <repository_url> --source <source_branch> --target <target_branch> [OPTION
 gimer https://github.com/username/repo.git --source feature-branch --target main
 ```
 
+### Note: Manually merging
+
+When merge conflicts occur, you may need to resolve them manually. To use a visual merge tool, configure your Git mergetool:
+
+```bash
+# Configure a merge tool (example with vscode)
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+
+# Or with vimdiff
+git config --global merge.tool vimdiff
+
+# Or with kdiff3
+git config --global merge.tool kdiff3
+```
+
+After resolving conflicts, gimer will automatically complete the merge. If you need to manually complete the merge outside of gimer, use:
+
+```bash
+# If you resolved conflicts manually (not using mergetool)
+git add .
+git commit -m "Resolve merge conflicts"
+```
+
 ## Development
 
 ```bash
