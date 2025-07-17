@@ -37,12 +37,17 @@ class Git:
         if self._should_confirm(args[0]) and not inquirer.confirm("Execute this command?",default=True).execute():
             raise UserAbortedError("Command execution cancelled by user")
 
+        if capture_output:
+            stderr = None
+        else:
+            stderr = subprocess.STDOUT
+
         try:
             result = subprocess.run(
                 ["git", *args],
                 check=True,
                 capture_output=capture_output,
-                stderr=subprocess.STDOUT,
+                stderr=stderr,
                 text=True
             )
             return result.stdout if capture_output else None
