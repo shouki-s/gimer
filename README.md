@@ -26,9 +26,8 @@ gimer <repository_url> --source <source_branch> --target <target_branch> [OPTION
 - `--target`: Target branch to merge into (required)
 - `--dry-run`: Show what would be done without actually doing it
 - `--cleanup`: Remove local repository after completion
-- `--confirm`: Confirm before executing git commands
-  - `origin`: Confirm only for commands affecting origin
-  - `all`: Confirm for all git commands
+- `-y, --no-confirm`: Do not confirm
+- `--confirm-all`: Confirm before executing all git commands
 
 ### Example
 
