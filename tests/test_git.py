@@ -70,7 +70,7 @@ class TestGit:
             ["git", "status"],
             check=True,
             capture_output=True,
-            stderr=subprocess.STDOUT,
+            stderr=None,
             text=True
         )
         assert result == "output"
