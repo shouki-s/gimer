@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.prompt import Confirm
 
 from gimer.git import Git, UserAbortedError
+from gimer.i18n import _
 from gimer.repositories import get_github_repo_path
 
 console = Console()
@@ -38,7 +39,7 @@ def main(  # noqa: PLR0913
         config = {"dry_run": dry_run, "no_confirm": no_confirm, "confirm_all": confirm_all}
         merge(repo_path, repo_url, target, source, config)
     except UserAbortedError:
-        console.print("⚡[yellow]Operation cancelled.[/yellow]")
+        console.print(f"⚡[yellow]{_('Operation cancelled.')}[/yellow]")
     finally:
         if cleanup and repo_path:
             cleanup_repository(repo_path)
@@ -51,8 +52,8 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
         git.clone_repository(repo_url)
 
     if not git.check_working_directory_clean():
-        console.print("⚡[yellow]Warning: You have uncommitted changes in the repository.[/yellow]")
-        if not Confirm.ask("⚡Do you want to continue? It will clean dirty files and reset the repository."):
+        console.print(f"⚡[yellow]{_('Warning: You have uncommitted changes in the repository.')}[/yellow]")
+        if not Confirm.ask(f"⚡{_('Do you want to continue? It will clean dirty files and reset the repository.')}"):
             return
         git.clean_working_directory()
 
@@ -60,15 +61,15 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
     branches = git.get_branches()
     if not source_branch:
         source_branch = inquirer.fuzzy(
-            "Select source branch to merge from",
+            _("Select source branch to merge from"),
             choices=branches,
         ).execute()
     if not target_branch:
         target_branch = inquirer.fuzzy(
-            "Select target branch to merge into",
+            _("Select target branch to merge into"),
             choices=branches,
         ).execute()
-    if not (config["no_confirm"] or Confirm.ask(f"⚡Do you want to git merge {target_branch} ← {source_branch}?", default=True)):
+    if not (config["no_confirm"] or Confirm.ask(f"⚡{_('Do you want to git merge {0} ← {1}?').format(target_branch, source_branch)}", default=True)):
         return
     git.checkout_branch(source_branch)
     git.pull_branch(source_branch)
@@ -77,27 +78,27 @@ def merge(repo_path: Path, repo_url: str, target_branch: str | None, source_bran
     try:
         git.merge_branch(source_branch)
     except Exception as e:
-        console.print("⚡[red]An error occurred during merge:[/red]")
+        console.print(f"⚡[red]{_('An error occurred during merge:')}[/red]")
         console.print(f"⚡{e!s}")
         if "CONFLICT" not in str(e):
             return
-        console.print("\n⚡[yellow]Merge conflicts detected.[/yellow]")
-        if config["no_confirm"] or not Confirm.ask("⚡Do you want to resolve conflicts manually?", default=True):
+        console.print(f"\n⚡[yellow]{_('Merge conflicts detected.')}[/yellow]")
+        if config["no_confirm"] or not Confirm.ask(f"⚡{_('Do you want to resolve conflicts manually?')}", default=True):
             git.abort_merge()
             return
         git.resolve_conflicts()
         if not git.is_merge_in_progress():
-            console.print("⚡[yellow]Merge was aborted. Exiting...[/yellow]")
+            console.print(f"⚡[yellow]{_('Merge was aborted. Exiting...')}[/yellow]")
             return
         git.commit_merge()
 
     git.push_branch(target_branch)
-    console.print("⚡[green]Merge completed successfully![/green]")
+    console.print(f"⚡[green]{_('Merge completed successfully!')}[/green]")
 
 def cleanup_repository(repo_path: Path) -> None:
     """Remove local repository after completion."""
     os.chdir("..")  # move to parent directory before removing
-    console.print(f"⚡[bold]Removing...[/bold] {repo_path}")
+    console.print(f"⚡[bold]{_('Removing...')}[/bold] {repo_path}")
     shutil.rmtree(repo_path)
 
 if __name__ == '__main__':

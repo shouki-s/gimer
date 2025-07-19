@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-20 01:56+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gimer/cli.py:42
+msgid "Operation cancelled."
+msgstr ""
+
+#: gimer/cli.py:55
+msgid "Warning: You have uncommitted changes in the repository."
+msgstr ""
+
+#: gimer/cli.py:56
+msgid ""
+"Do you want to continue? It will clean dirty files and reset the repository."
+msgstr ""
+
+#: gimer/cli.py:64
+msgid "Select source branch to merge from"
+msgstr ""
+
+#: gimer/cli.py:69
+msgid "Select target branch to merge into"
+msgstr ""
+
+#: gimer/cli.py:72
+msgid "Do you want to git merge {0} ← {1}?"
+msgstr ""
+
+#: gimer/cli.py:81
+msgid "An error occurred during merge:"
+msgstr ""
+
+#: gimer/cli.py:85
+msgid "Merge conflicts detected."
+msgstr ""
+
+#: gimer/cli.py:86
+msgid "Do you want to resolve conflicts manually?"
+msgstr ""
+
+#: gimer/cli.py:91
+msgid "Merge was aborted. Exiting..."
+msgstr ""
+
+#: gimer/cli.py:96
+msgid "Merge completed successfully!"
+msgstr ""
+
+#: gimer/cli.py:101
+msgid "Removing..."
+msgstr ""
+
+#: gimer/git.py:39
+msgid "Execute this command?"
+msgstr ""

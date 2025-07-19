@@ -1,0 +1,56 @@
+# Japanese translations for gimer package.
+# Copyright (C) 2024 THE gimer'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gimer package.
+# Shouki SAKAMOTO <shouki-s@sakamotoshoukis-macbook-air.local>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gimer 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Shouki SAKAMOTO <shouki-s@sakamotoshoukis-macbook-air.local>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Operation cancelled."
+msgstr "操作がキャンセルされました。"
+
+msgid "Warning: You have uncommitted changes in the repository."
+msgstr "警告: リポジトリに未コミットの変更があります。"
+
+msgid "Do you want to continue? It will clean dirty files and reset the repository."
+msgstr "続行しますか？ダーティファイルをクリーンアップしてリポジトリをリセットします。"
+
+msgid "Select source branch to merge from"
+msgstr "マージ元のソースブランチを選択してください"
+
+msgid "Select target branch to merge into"
+msgstr "マージ先のターゲットブランチを選択してください"
+
+msgid "Do you want to git merge {0} ← {1}?"
+msgstr "git mergeを実行しますか？ {0} ← {1}"
+
+msgid "An error occurred during merge:"
+msgstr "マージ中にエラーが発生しました:"
+
+msgid "Merge conflicts detected."
+msgstr "マージコンフリクトが検出されました。"
+
+msgid "Do you want to resolve conflicts manually?"
+msgstr "コンフリクトを手動で解決しますか？"
+
+msgid "Merge was aborted. Exiting..."
+msgstr "マージが中止されました。終了します..."
+
+msgid "Merge completed successfully!"
+msgstr "マージが正常に完了しました！"
+
+msgid "Removing..."
+msgstr "削除中..."
+
+msgid "Execute this command?"
+msgstr "このコマンドを実行しますか？"

@@ -4,6 +4,8 @@ import subprocess
 from InquirerPy import inquirer
 from rich.console import Console
 
+from gimer.i18n import _
+
 console = Console()
 
 
@@ -34,7 +36,7 @@ class Git:
         if self.dry_run:
             return None
 
-        if self._should_confirm(args[0]) and not inquirer.confirm("Execute this command?",default=True).execute():
+        if self._should_confirm(args[0]) and not inquirer.confirm(_("Execute this command?"), default=True).execute():
             raise UserAbortedError("Command execution cancelled by user")
 
         if capture_output:
