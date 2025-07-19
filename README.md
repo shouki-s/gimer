@@ -4,15 +4,9 @@ A CLI tool to make Git merge operations easier.
 
 ## Installation
 
-### From Binary (Recommended)
+### From Binary
 
 Download the latest binary from the [Releases](https://github.com/shouki-s/gimer/releases) page.
-
-### From Source
-
-```bash
-pip install gimer
-```
 
 ## Usage
 
@@ -22,8 +16,8 @@ gimer <repository_url> --source <source_branch> --target <target_branch> [OPTION
 
 ### Options
 
-- `--source`: Source branch to merge from (required)
-- `--target`: Target branch to merge into (required)
+- `--source`: Source branch to merge from
+- `--target`: Target branch to merge into
 - `--dry-run`: Show what would be done without actually doing it
 - `--cleanup`: Remove local repository after completion
 - `-y, --no-confirm`: Do not confirm
